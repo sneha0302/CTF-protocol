@@ -12,6 +12,31 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+    - name: Set up node
+      uses: actions/setup-node@v3
+
+    - name: Install foundry
+      uses: foundry-rs/foundry-toolchain@v1
+      with:
+          version: nightly
+
+    - name: Display config
+      run: forge config
+
+    - name: Compile contracts
+      run: make artifacts
+
+    - name: Generate interfaces
+      run: make interfaces
+
+    - name: Run tests
+      run: make test
+      env:
+          ETHEREUM_NODE_MAINNET: ${{ secrets.ETHEREUM_NODE_MAINNET }}
+          ETHEREUM_NODE_POLYGON: ${{ secrets.ETHEREUM_NODE_POLYGON }}
+
+    - name: Check linting & formatting
+      run: make lint   
 
     - name: Run Slither
       uses: crytic/slither-action@v0.1.1
